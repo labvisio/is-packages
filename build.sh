@@ -1,14 +1,15 @@
 #!/bin/bash
 
 read -r -d '' build_commands <<- EOM
-  pip install --user conan_package_tools &&
-  conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan &&
-  cd SimpleAmqpClient && python build.py && cd .. &&
-  cd prometheus-cpp && python build.py && cd .. &&
-  cd opentracing-cpp && python build.py && cd .. &&
-  cd is-msgs && python build.py && cd .. &&
-  cd is-wire && python build.py && cd .. &&
-  cd zipkin-cpp-opentracing && python build.py && cd ..
+  pip install --user conan_package_tools
+  && conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
+  && cd opencv && python build.py && cd ..
+  && cd SimpleAmqpClient && python build.py && cd ..
+  && cd prometheus-cpp && python build.py && cd ..
+  && cd opentracing-cpp && python build.py && cd ..
+  && cd is-msgs && python build.py && cd .. 
+  && cd is-wire && python build.py && cd .. 
+  && cd zipkin-cpp-opentracing && python build.py && cd ..
 EOM
 
 echo $build_commands
