@@ -3,7 +3,7 @@ import os
 from conans import ConanFile, CMake, tools
 
 
-class ProtobufTestConan(ConanFile):
+class ZipkincppopentracingTestConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     generators = "cmake"
 

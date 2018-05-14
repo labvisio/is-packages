@@ -4,14 +4,19 @@ from conans import ConanFile, CMake, tools
 class PrometheuscppConan(ConanFile):
     name = "prometheus-cpp"
     version = "0.4.1"
-    license = "<Put the package license here>"
-    url = "<Package recipe repository url here, for issues about the package>"
-    description = "<Description of Prometheuscpp here>"
+    license = ""
+    url = ""
+    description = ""
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [True, False]}
-    default_options = "shared=False"
+    options = {"shared": [True, False], "fPIC": [True, False]}
+    default_options = "shared=False", "fPIC=True"
     generators = "cmake"
-    requires = "protobuf/3.5.2@picoreti/testing", "zlib/1.2.11@conan/stable"
+    requires = "protobuf/3.5.2@bincrafters/stable", "zlib/1.2.11@conan/stable"
+
+    def configure(self):
+        if self.options.shared:
+            self.options["protobuf"].fPIC = True
+            #self.options["zlib"].fPIC = True
 
     def source(self):
         self.run("git clone https://github.com/jupp0r/prometheus-cpp")
@@ -23,7 +28,8 @@ conan_basic_setup()''')
 
     def build(self):
         cmake = CMake(self)
-        cmake.definitions[""] = "OFF"
+        if not self.options.shared:
+            cmake.definitions["CMAKE_POSITION_INDEPENDENT_CODE"] = self.options.fPIC
         cmake.configure(source_folder="prometheus-cpp")
         cmake.build()
         cmake.install()

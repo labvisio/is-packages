@@ -4,14 +4,19 @@ from conans import ConanFile, CMake, tools
 class SimpleamqpclientConan(ConanFile):
     name = "SimpleAmqpClient"
     version = "2.5.0"
-    license = "<Put the package license here>"
-    url = "<Package recipe repository url here, for issues about the package>"
-    description = "<Description of Simpleamqpclient here>"
+    license = ""
+    url = ""
+    description = ""
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [True, False]}
-    default_options = "shared=False"
+    options = {"shared": [True, False], "fPIC": [True, False]}
+    default_options = "shared=False", "fPIC=True"
     generators = "cmake"
-    requires = "rabbitmq-c/0.9.0@picoreti/testing", "boost/1.67.0@conan/stable"
+    requires = "rabbitmq-c/0.9.0@is/stable", "boost/1.67.0@conan/stable"
+
+    def configure(self):
+        if self.options.shared:
+            self.options["boost"].fPIC = True
+            self.options["rabbitmq-c"].fPIC = True
 
     def source(self):
         self.run("git clone https://github.com/alanxz/SimpleAmqpClient")
@@ -23,6 +28,9 @@ conan_basic_setup()''')
 
     def build(self):
         cmake = CMake(self)
+        if not self.options.shared:
+            cmake.definitions["CMAKE_POSITION_INDEPENDENT_CODE"] = self.options.fPIC
+
         cmake.definitions["ENABLE_TESTING"] = "OFF"
         cmake.configure(source_folder="SimpleAmqpClient")
         cmake.build()
