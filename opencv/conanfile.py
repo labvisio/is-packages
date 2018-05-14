@@ -24,6 +24,10 @@ class OpencvConan(ConanFile):
         installer.update() # Update the package database
         installer.install(" ".join(pack_names)) # Install the package
 
+    def configure(self):
+        if self.options.shared:
+            self.options["jasper"].shared = True
+
     def source(self):
         self.run("git clone https://github.com/opencv/opencv")
         self.run("cd opencv && git checkout 3.3.1") 
