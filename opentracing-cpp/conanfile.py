@@ -5,7 +5,7 @@ class OpentracingcppConan(ConanFile):
     name = "opentracing-cpp"
     version = "1.4.0"
     license = ""
-    url = ""
+    url = "https://github.com/labviros/is-packages"
     description = ""
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False], "fPIC": [True, False]}
@@ -15,8 +15,9 @@ class OpentracingcppConan(ConanFile):
     def source(self):
         self.run("git clone https://github.com/opentracing/opentracing-cpp")
         self.run("cd opentracing-cpp && git checkout v1.4.0")
-        tools.replace_in_file("opentracing-cpp/CMakeLists.txt", "project(opentracing-cpp)",
-                              '''project(opentracing-cpp)
+        tools.replace_in_file(
+            "opentracing-cpp/CMakeLists.txt", "project(opentracing-cpp)",
+            '''project(opentracing-cpp)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()''')
 

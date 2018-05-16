@@ -4,14 +4,14 @@ from conans import ConanFile, CMake, tools
 class ZipkincppopentracingConan(ConanFile):
     name = "zipkin-cpp-opentracing"
     version = "0.3.1"
-    license = "<Put the package license here>"
-    url = "<Package recipe repository url here, for issues about the package>"
-    description = "<Description of Zipkincppopentracing here>"
+    license = ""
+    url = "https://github.com/labviros/is-packages"
+    description = ""
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False], "fPIC": [True, False]}
     default_options = "shared=False", "fPIC=True"
     generators = "cmake"
-    requires = ("libcurl/7.56.1@bincrafters/stable", "opentracing-cpp/1.4.0@is/stable")
+    requires = ("libcurl/[>=7.0]@bincrafters/stable", "opentracing-cpp/[>=1.0]@is/stable")
 
     def configure(self):
         if self.options.shared:
@@ -21,8 +21,9 @@ class ZipkincppopentracingConan(ConanFile):
     def source(self):
         self.run("git clone https://github.com/rnburn/zipkin-cpp-opentracing")
         self.run("cd zipkin-cpp-opentracing && git checkout v0.3.1")
-        tools.replace_in_file("zipkin-cpp-opentracing/CMakeLists.txt", "project(zipkin-opentracing)",
-                              '''project(zipkin-opentracing)
+        tools.replace_in_file(
+            "zipkin-cpp-opentracing/CMakeLists.txt", "project(zipkin-opentracing)",
+            '''project(zipkin-opentracing)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()''')
 
