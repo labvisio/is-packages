@@ -18,6 +18,7 @@ read -r -d '' build_commands <<- EOM
   cd is-wire && python build.py && cd .. 
   cd opencv && python build.py && cd ..
   cd spinnaker && python build.py && cd ..
+  cd armadillo && python build.py && cd ..
 EOM
 
 echo $build_commands
