@@ -11,9 +11,9 @@ class OpencvConan(ConanFile):
     options = {"shared": [True, False], "fPIC": [True, False]}
     default_options = ("shared=False", "fPIC=True")
     generators = "cmake"
-    requires = ("zlib/[>=1.2]@conan/stable", "libjpeg/9b@bincrafters/stable",
+    requires = ("zlib/[>=1.2]@conan/stable", "libjpeg-turbo/[>=1.5.2]@bincrafters/stable",
                 "libpng/[>=1.6]@bincrafters/stable", "libtiff/[>=4.0]@bincrafters/stable",
-                "jasper/[>=2.0]@conan/stable", "Qt/[>=5.0]@bincrafters/stable")
+                "Qt/[>=5.0]@bincrafters/stable")
 
     def system_requirements(self):
         pack_names = [
@@ -69,6 +69,7 @@ conan_basic_setup()''')
         cmake.definitions["WITH_QT"] = "ON"
         cmake.definitions["WITH_ZLIB"] = "ON"
         cmake.definitions["WITH_WEBP"] = "OFF"
+        cmake.definitions["WITH_JASPER"] = "OFF"
         cmake.configure(source_folder="opencv")
         cmake.build()
         cmake.install()
