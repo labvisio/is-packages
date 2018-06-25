@@ -26,6 +26,17 @@ class ArmadilloConan(ConanFile):
         os.unlink(self.source_tarxz_file)
         os.rename(self.source_folder_name, "sources")
 
+    def system_requirements(self):
+        pack_names = []
+        if self.options.ARMA_USE_LAPACK:
+            pack_names.append("liblapack-dev")
+        if self.options.ARMA_USE_BLAS:
+            pack_names.append("libopenblas-dev")
+        if pack_names:
+            installer = tools.SystemPackageTool()
+            installer.update()  # Update the package database
+            installer.install(" ".join(pack_names))  # Install the package
+
     def build(self):
         if not self.options.ARMA_USE_LAPACK:
             tools.replace_in_file(file_path="sources/include/armadillo_bits/config.hpp",
@@ -52,3 +63,7 @@ class ArmadilloConan(ConanFile):
 
     def package_info(self):
         self.cpp_info.libs = ["armadillo"]
+        if self.options.ARMA_USE_LAPACK:
+            self.cpp_info.libs.append("lapack")
+        if self.options.ARMA_USE_BLAS:
+            self.cpp_info.libs.append("openblas")
