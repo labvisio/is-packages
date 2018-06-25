@@ -11,7 +11,9 @@ class OpencvTestConan(ConanFile):
         cmake = CMake(self)
         # Current dir is "test_package/build/<build_id>" and CMakeLists.txt is
         # in "test_package"
-        cmake.configure()
+
+        #source = "with_ffmpeg" if self.options.with_ffmpeg else "default"
+        cmake.configure(source_folder="with_ffmpeg")
         cmake.build()
 
     def imports(self):

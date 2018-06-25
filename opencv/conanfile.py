@@ -8,25 +8,55 @@ class OpencvConan(ConanFile):
     url = "https://github.com/labviros/is-packages"
     description = ""
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [True, False], "fPIC": [True, False]}
-    default_options = ("shared=False", "fPIC=True")
+    options = {
+        "shared": [True, False],
+        "fPIC": [True, False],
+        "with_zlib": [True, False],
+        "with_jpeg": [True, False],
+        "with_png": [True, False],
+        "with_tiff": [True, False],
+        "with_qt": [True, False],
+        "with_tbb": [True, False],
+        "with_ffmpeg": [True, False],
+        "with_lapack": [True, False]
+    }
+    default_options = ("shared=False", "fPIC=True", "with_zlib=True", "with_jpeg=True",
+                       "with_png=True", "with_tiff=True", "with_qt=True", "with_tbb=True",
+                       "with_ffmpeg=True", "with_lapack=True")
     generators = "cmake"
-    requires = ("zlib/[>=1.2]@conan/stable", "libjpeg-turbo/[>=1.5.2]@bincrafters/stable",
-                "libpng/[>=1.6]@bincrafters/stable", "libtiff/[>=4.0]@bincrafters/stable",
-                "Qt/[>=5.0]@bincrafters/stable")
+
+    def requirements(self):
+        if self.options.with_zlib:
+            self.requires("zlib/[>=1.2]@conan/stable")
+        if self.options.with_jpeg:
+            self.requires("libjpeg-turbo/[>=1.5.2]@bincrafters/stable")
+        if self.options.with_png:
+            self.requires("libpng/[>=1.6]@bincrafters/stable")
+        if self.options.with_tiff:
+            self.requires("libtiff/[>=4.0]@bincrafters/stable")
+        if self.options.with_qt:
+            self.requires("Qt/[>=5.0]@bincrafters/stable")
+        if self.options.with_tbb:
+            self.requires("TBB/4.4.4@conan/stable")
 
     def system_requirements(self):
-        pack_names = [
-            "libavdevice-dev", "libavfilter-dev", "libavcodec-dev", "libavformat-dev",
-            "libavresample-dev"
-        ]
-        installer = tools.SystemPackageTool()
-        installer.update()  # Update the package database
-        installer.install(" ".join(pack_names))  # Install the package
+        dependencies = []
+        if self.options.with_ffmpeg:
+            dependencies.extend([
+                "libavdevice-dev", "libavfilter-dev", "libavcodec-dev", "libavformat-dev",
+                "libavresample-dev"
+            ])
+
+        if self.options.with_lapack:
+            dependencies.extend(["libopenblas-dev", "liblapack-dev", "liblapacke-dev"])
+
+        if dependencies:
+            installer = tools.SystemPackageTool()
+            installer.update()  # Update the package database
+            installer.install(" ".join(dependencies))  # Install the package
 
     def configure(self):
-        if self.options.shared:
-            self.options["jasper"].shared = True
+        pass
 
     def source(self):
         self.run("git clone https://github.com/opencv/opencv")
@@ -64,10 +94,18 @@ conan_basic_setup()''')
         cmake.definitions["BUILD_opencv_dnn"] = "OFF"
         cmake.definitions["BUILD_opencv_dnn_modern"] = "OFF"
         cmake.definitions["BUILD_opencv_tracking"] = "OFF"
-        cmake.definitions["WITH_FFMPEG"] = "ON"
+
+        cmake.definitions["WITH_ZLIB"] = "ON" if self.options.with_zlib else "OFF"
+        cmake.definitions["WITH_JPEG"] = "ON" if self.options.with_jpeg else "OFF"
+        cmake.definitions["WITH_PNG"] = "ON" if self.options.with_png else "OFF"
+        cmake.definitions["WITH_TIFF"] = "ON" if self.options.with_tiff else "OFF"
+        cmake.definitions["WITH_QT"] = "ON" if self.options.with_qt else "OFF"
+        cmake.definitions["WITH_TBB"] = "ON" if self.options.with_tbb else "OFF"
+        cmake.definitions["WITH_FFMPEG"] = "ON" if self.options.with_ffmpeg else "OFF"
+        cmake.definitions["WITH_LAPACK"] = "ON" if self.options.with_lapack else "OFF"
+
         cmake.definitions["WITH_IPP"] = "ON"
-        cmake.definitions["WITH_QT"] = "ON"
-        cmake.definitions["WITH_ZLIB"] = "ON"
+        cmake.definitions["WITH_OPENMP"] = "ON"
         cmake.definitions["WITH_WEBP"] = "OFF"
         cmake.definitions["WITH_JASPER"] = "OFF"
         cmake.configure(source_folder="opencv")
@@ -84,10 +122,10 @@ conan_basic_setup()''')
         self.copy(pattern="*.so*", dst="lib", src="lib", keep_path=False)
 
     def package_info(self):
-        libs_opencv = [
+        libs = [
             "opencv_aruco", "opencv_bgsegm", "opencv_bioinspired", "opencv_calib3d",
-            "opencv_ccalib", "opencv_cvv", "opencv_dpm", "opencv_face", "opencv_features2d",
-            "opencv_flann", "opencv_fuzzy", "opencv_highgui", "opencv_img_hash", "opencv_imgcodecs",
+            "opencv_ccalib", "opencv_dpm", "opencv_face", "opencv_features2d", "opencv_flann",
+            "opencv_fuzzy", "opencv_highgui", "opencv_img_hash", "opencv_imgcodecs",
             "opencv_imgproc", "opencv_line_descriptor", "opencv_ml", "opencv_objdetect",
             "opencv_optflow", "opencv_phase_unwrapping", "opencv_photo", "opencv_plot",
             "opencv_reg", "opencv_rgbd", "opencv_saliency", "opencv_shape", "opencv_stereo",
@@ -97,6 +135,11 @@ conan_basic_setup()''')
             "opencv_core"
         ]
 
-        libs_linux = ["pthread", "dl", "IlmImf", "ittnotify", "ippiw", "ippicv"]
+        if self.options.with_qt:
+            libs.extend(["opencv_cvv"])
 
-        self.cpp_info.libs.extend(libs_opencv + libs_linux)
+        libs.extend([
+            "pthread", "dl", "IlmImf", "ittnotify", "ippiw", "ippicv", "lapacke", "lapack", "blas"
+        ])
+
+        self.cpp_info.libs = libs

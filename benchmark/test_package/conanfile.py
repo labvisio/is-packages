@@ -3,7 +3,7 @@ import os
 from conans import ConanFile, CMake, tools
 
 
-class IswireTestConan(ConanFile):
+class GooglebenchmarkTestConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     generators = "cmake"
 
