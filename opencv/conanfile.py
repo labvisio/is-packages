@@ -3,7 +3,7 @@ from conans import ConanFile, CMake, tools
 
 class OpencvConan(ConanFile):
     name = "opencv"
-    version = "3.3.1"
+    version = "3.4.2"
     license = ""
     url = "https://github.com/labviros/is-packages"
     description = ""
@@ -35,7 +35,7 @@ class OpencvConan(ConanFile):
         if self.options.with_tiff:
             self.requires("libtiff/[>=4.0]@bincrafters/stable")
         if self.options.with_qt:
-            self.requires("Qt/[>=5.0]@bincrafters/stable")
+            self.requires("Qt/[>=5.0]@is/stable")
         if self.options.with_tbb:
             self.requires("TBB/4.4.4@conan/stable")
 
@@ -44,7 +44,7 @@ class OpencvConan(ConanFile):
         if self.options.with_ffmpeg:
             dependencies.extend([
                 "libavdevice-dev", "libavfilter-dev", "libavcodec-dev", "libavformat-dev",
-                "libavresample-dev"
+                "libavresample-dev", "libswscale-dev"
             ])
 
         if self.options.with_lapack:
@@ -60,9 +60,9 @@ class OpencvConan(ConanFile):
 
     def source(self):
         self.run("git clone https://github.com/opencv/opencv")
-        self.run("cd opencv && git checkout 3.3.1")
+        self.run("cd opencv && git checkout 3.4.2")
         self.run("cd opencv && git clone https://github.com/opencv/opencv_contrib")
-        self.run("cd opencv/opencv_contrib && git checkout 3.3.1")
+        self.run("cd opencv/opencv_contrib && git checkout 3.4.2")
         tools.replace_in_file(
             "opencv/CMakeLists.txt", "project(OpenCV CXX C)", '''project(OpenCV CXX C)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
@@ -103,11 +103,11 @@ conan_basic_setup()''')
         cmake.definitions["WITH_TBB"] = "ON" if self.options.with_tbb else "OFF"
         cmake.definitions["WITH_FFMPEG"] = "ON" if self.options.with_ffmpeg else "OFF"
         cmake.definitions["WITH_LAPACK"] = "ON" if self.options.with_lapack else "OFF"
-
         cmake.definitions["WITH_IPP"] = "ON"
         cmake.definitions["WITH_OPENMP"] = "ON"
         cmake.definitions["WITH_WEBP"] = "OFF"
         cmake.definitions["WITH_JASPER"] = "OFF"
+
         cmake.configure(source_folder="opencv")
         cmake.build()
         cmake.install()
@@ -135,11 +135,15 @@ conan_basic_setup()''')
             "opencv_core"
         ]
 
+        if self.options.with_ffmpeg:
+            libs.extend(["avformat", "avcodec", "avdevice", "avresample", "avutil", "swscale"])
+
         if self.options.with_qt:
             libs.extend(["opencv_cvv"])
 
-        libs.extend([
-            "pthread", "dl", "IlmImf", "ittnotify", "ippiw", "ippicv", "lapacke", "lapack", "blas"
-        ])
+        if self.options.with_lapack:
+            libs.extend(["lapacke", "lapack", "blas"])
+
+        libs.extend(["pthread", "dl", "IlmImf", "ittnotify", "ippiw", "ippicv"])
 
         self.cpp_info.libs = libs

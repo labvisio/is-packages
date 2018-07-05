@@ -10,7 +10,8 @@ using namespace cv;
 
 int main() {
   std::cout << " ########################## RUNNING WITH_FFMPEG TEST ##########################"
-            << std::endl;
+            << std::endl
+            << cv::getBuildInformation() << std::endl;
 
   cv::Mat m = cv::Mat::ones(2, 2, CV_8UC3);
   cv::VideoCapture video("../../../big_buck_bunny_720p_1mb.mp4");

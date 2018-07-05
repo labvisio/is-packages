@@ -9,7 +9,9 @@ using namespace cv;
 
 int main() {
   std::cout << " ########################## RUNNING DEFAULT TEST ##########################"
-            << std::endl;
+            << std::endl
+            << cv::getBuildInformation() << std::endl;
+
   cv::Mat m = cv::Mat::ones(2, 2, CV_8UC3);
 
   int squaresX = 5;
