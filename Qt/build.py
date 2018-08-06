@@ -1,16 +1,20 @@
 from conan.packager import ConanMultiPackager
 
 if __name__ == "__main__":
-    builder = ConanMultiPackager(
-        build_policy="missing", gcc_versions=["5"], archs=["x86_64"], username="is")
+    builder = ConanMultiPackager(build_policy="missing")
 
     builder.add({
-        "compiler.version": 5,
         "compiler.libcxx": "libstdc++11",
-        "arch": "x86_64",
         "build_type": "Release",
     }, {
         "Qt:shared": True,
+    })
+
+    builder.add({
+        "compiler.libcxx": "libstdc++11",
+        "build_type": "Release",
+    }, {
+        "Qt:shared": False,
     })
 
     builder.run()
