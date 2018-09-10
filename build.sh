@@ -25,13 +25,13 @@ read -r -d '' build_commands <<- EOM
 
   git clone https://github.com/labviros/is-msgs \
     && cd is-msgs \
-    && git checkout modern-cmake \
+    && git checkout v1.1.8 \
     && python package.py \
     && cd ..
 
   git clone https://github.com/labviros/is-wire \
     && cd is-wire \
-    && git checkout develop \
+    && git checkout v1.1.4 \
     && python package.py \
     && cd ..
 EOM
