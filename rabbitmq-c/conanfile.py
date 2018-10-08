@@ -9,17 +9,21 @@ class RabbitMQConan(ConanFile):
     description = ""
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False], "fPIC": [True, False], "with_openssl": [True, False]}
-    default_options = "shared=False", "fPIC=True", "with_openssl=False"
+    default_options = "shared=True", "fPIC=True", "with_openssl=False"
     generators = "cmake"
+   
+    def source(self):
+        self.run("git clone https://github.com/alanxz/rabbitmq-c")
+        self.run("cd rabbitmq-c && git checkout v0.9.0")
 
     def requirements(self):
         if self.options.with_openssl:
             self.requires("OpenSSL/1.0.2n@conan/stable")
 
-    def source(self):
-        self.run("git clone https://github.com/alanxz/rabbitmq-c")
-        self.run("cd rabbitmq-c && git checkout v0.9.0")
-
+    def configure(self):
+        if self.options.with_openssl and self.options.shared:
+            self.options["OpenSSL"].shared = True
+  
     def build(self):
         cmake = CMake(self)
         cmake.definitions["ENABLE_SSL_SUPPORT"] = "ON" if self.options.with_openssl else "OFF"

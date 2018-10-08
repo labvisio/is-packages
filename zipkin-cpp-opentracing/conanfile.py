@@ -9,14 +9,14 @@ class ZipkincppopentracingConan(ConanFile):
     description = ""
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False], "fPIC": [True, False]}
-    default_options = "shared=False", "fPIC=True"
+    default_options = "shared=True", "fPIC=True"
     generators = "cmake"
     requires = ("libcurl/7.61.1@bincrafters/stable", "opentracing-cpp/1.4.0@is/stable")
 
     def configure(self):
         if self.options.shared:
-            self.options["libcurl"].fPIC = True
-            self.options["opentracing-cpp"].fPIC = True
+            self.options["libcurl"].shared = True
+            self.options["opentracing-cpp"].shared = True
 
     def source(self):
         self.run("git clone https://github.com/rnburn/zipkin-cpp-opentracing")

@@ -20,8 +20,8 @@ class OpencvConan(ConanFile):
         "with_ffmpeg": [True, False],
         "with_lapack": [True, False]
     }
-    default_options = ("shared=False", "fPIC=True", "with_zlib=True", "with_jpeg=True",
-                       "with_png=True", "with_tiff=True", "with_qt=True", "with_tbb=True",
+    default_options = ("shared=True", "fPIC=True", "with_zlib=True", "with_jpeg=True",
+                       "with_png=True", "with_tiff=True", "with_qt=False", "with_tbb=True",
                        "with_ffmpeg=True", "with_lapack=True")
     generators = "cmake"
 
@@ -57,7 +57,18 @@ class OpencvConan(ConanFile):
             installer.install(" ".join(dependencies))  # Install the package
 
     def configure(self):
-        pass
+        if self.options.with_zlib and self.options.shared:
+            self.options["zlib"].shared = True
+        if self.options.with_jpeg and self.options.shared:
+            self.options["libjpeg"].shared = True
+        if self.options.with_png and self.options.shared:
+            self.options["libpng"].shared = True
+        if self.options.with_tiff and self.options.shared:
+            self.options["libtiff"].shared = True
+        if self.options.with_qt and self.options.shared:
+            self.options["Qt"].shared = True
+        if self.options.with_tbb and self.options.shared:
+            self.options["TBB"].shared = True
 
     def source(self):
         self.run("git clone https://github.com/opencv/opencv")

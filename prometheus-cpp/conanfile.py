@@ -9,14 +9,14 @@ class PrometheuscppConan(ConanFile):
     description = ""
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False], "fPIC": [True, False]}
-    default_options = "shared=False", "fPIC=True"
+    default_options = "shared=True", "fPIC=True"
     generators = "cmake"
     requires = "protobuf/3.6.1@bincrafters/stable", "zlib/1.2.11@conan/stable"
 
     def configure(self):
         if self.options.shared:
-            self.options["protobuf"].fPIC = True
-            #self.options["zlib"].fPIC = True
+            self.options["protobuf"].shared = True
+            self.options["zlib"].shared = True
 
     def source(self):
         self.run("git clone https://github.com/jupp0r/prometheus-cpp")

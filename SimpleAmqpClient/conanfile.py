@@ -9,14 +9,14 @@ class SimpleamqpclientConan(ConanFile):
     description = ""
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False], "fPIC": [True, False], "with_openssl": [True, False]}
-    default_options = "shared=False", "fPIC=True", "with_openssl=False"
+    default_options = "shared=True", "fPIC=True", "with_openssl=False"
     generators = "cmake"
     requires = ("rabbitmq-c/0.9.0@is/stable", "boost/1.68.0@conan/stable")
 
     def configure(self):
         if self.options.shared:
-            self.options["boost"].fPIC = True
-            self.options["rabbitmq-c"].fPIC = True
+            self.options["boost"].shared = True
+            self.options["rabbitmq-c"].shared = True
         self.options["rabbitmq-c"].with_openssl = self.options.with_openssl
 
     def source(self):
