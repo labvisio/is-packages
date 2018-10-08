@@ -27,15 +27,15 @@ class OpencvConan(ConanFile):
 
     def requirements(self):
         if self.options.with_zlib:
-            self.requires("zlib/[>=1.2]@conan/stable")
+            self.requires("zlib/1.2.11@conan/stable")
         if self.options.with_jpeg:
-            self.requires("libjpeg-turbo/[>=1.5.2]@bincrafters/stable")
+            self.requires("libjpeg-turbo/1.5.2@bincrafters/stable")
         if self.options.with_png:
-            self.requires("libpng/[>=1.6]@bincrafters/stable")
+            self.requires("libpng/1.6.34@bincrafters/stable")
         if self.options.with_tiff:
-            self.requires("libtiff/[>=4.0]@bincrafters/stable")
+            self.requires("libtiff/4.0.9@bincrafters/stable")
         if self.options.with_qt:
-            self.requires("Qt/[>=5.0]@is/stable")
+            self.requires("Qt/5.11.2@bincrafters/stable")
         if self.options.with_tbb:
             self.requires("TBB/4.4.4@conan/stable")
 
@@ -48,7 +48,8 @@ class OpencvConan(ConanFile):
             ])
 
         if self.options.with_lapack:
-            dependencies.extend(["libopenblas-dev", "liblapack-dev", "liblapacke-dev"])
+            dependencies.extend(
+                ["libopenblas-dev", "liblapack-dev", "liblapacke-dev"])
 
         if dependencies:
             installer = tools.SystemPackageTool()
@@ -136,7 +137,8 @@ conan_basic_setup()''')
         ]
 
         if self.options.with_ffmpeg:
-            libs.extend(["avformat", "avcodec", "avdevice", "avresample", "avutil", "swscale"])
+            libs.extend(["avformat", "avcodec", "avdevice",
+                         "avresample", "avutil", "swscale"])
 
         if self.options.with_qt:
             libs.extend(["opencv_cvv"])
@@ -144,6 +146,7 @@ conan_basic_setup()''')
         if self.options.with_lapack:
             libs.extend(["lapacke", "lapack", "blas"])
 
-        libs.extend(["pthread", "dl", "IlmImf", "ittnotify", "ippiw", "ippicv"])
+        libs.extend(["pthread", "dl", "IlmImf",
+                     "ittnotify", "ippiw", "ippicv"])
 
         self.cpp_info.libs = libs

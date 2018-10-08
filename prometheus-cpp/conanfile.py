@@ -11,7 +11,7 @@ class PrometheuscppConan(ConanFile):
     options = {"shared": [True, False], "fPIC": [True, False]}
     default_options = "shared=False", "fPIC=True"
     generators = "cmake"
-    requires = "protobuf/[>=3.0]@bincrafters/stable", "zlib/[>=1.2]@conan/stable"
+    requires = "protobuf/3.6.1@bincrafters/stable", "zlib/1.2.11@conan/stable"
 
     def configure(self):
         if self.options.shared:

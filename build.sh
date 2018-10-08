@@ -16,7 +16,6 @@ read -r -d '' build_commands <<- EOM
   cd prometheus-cpp && python build.py && cd ..
   cd opentracing-cpp && python build.py && cd ..
   cd zipkin-cpp-opentracing && python build.py && cd ..
-  cd Qt && python build.py && cd ..
   cd opencv && python build.py && cd ..
   cd spinnaker && python build.py && cd ..
   cd flycapture2 && python build.py && cd ..

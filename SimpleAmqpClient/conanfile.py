@@ -11,7 +11,7 @@ class SimpleamqpclientConan(ConanFile):
     options = {"shared": [True, False], "fPIC": [True, False], "with_openssl": [True, False]}
     default_options = "shared=False", "fPIC=True", "with_openssl=False"
     generators = "cmake"
-    requires = ("rabbitmq-c/[>=0.9]@is/stable", "boost/[>=1.47.0]@conan/stable")
+    requires = ("rabbitmq-c/0.9.0@is/stable", "boost/1.68.0@conan/stable")
 
     def configure(self):
         if self.options.shared:

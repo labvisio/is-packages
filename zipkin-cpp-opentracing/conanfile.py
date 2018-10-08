@@ -11,7 +11,7 @@ class ZipkincppopentracingConan(ConanFile):
     options = {"shared": [True, False], "fPIC": [True, False]}
     default_options = "shared=False", "fPIC=True"
     generators = "cmake"
-    requires = ("libcurl/[>=7.0]@bincrafters/stable", "opentracing-cpp/[>=1.0]@is/stable")
+    requires = ("libcurl/7.61.1@bincrafters/stable", "opentracing-cpp/1.4.0@is/stable")
 
     def configure(self):
         if self.options.shared:
