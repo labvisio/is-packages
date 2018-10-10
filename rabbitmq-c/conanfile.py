@@ -21,6 +21,7 @@ class RabbitMQConan(ConanFile):
             self.requires("OpenSSL/1.0.2n@conan/stable")
 
     def configure(self):
+        del self.settings.compiler.libcxx
         if self.options.with_openssl and self.options.shared:
             self.options["OpenSSL"].shared = True
   
@@ -37,14 +38,8 @@ class RabbitMQConan(ConanFile):
 
     def package(self):
         self.copy("*.h", dst="include", src="rabbitmq-c/librabbitmq")
-        self.copy("*rabbitmq.lib", dst="lib", keep_path=False)
-        self.copy("*.dll", dst="bin", keep_path=False)
-        self.copy("*.so", dst="lib", keep_path=False)
-        self.copy("*.dylib", dst="lib", keep_path=False)
+        self.copy("*.so*", dst="lib", keep_path=False)
         self.copy("*.a", dst="lib", keep_path=False)
 
     def package_info(self):
         self.cpp_info.libs = ["rabbitmq"]
-
-    def configure(self):
-        del self.settings.compiler.libcxx

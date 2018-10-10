@@ -34,8 +34,6 @@ class OpencvConan(ConanFile):
             self.requires("libpng/1.6.34@bincrafters/stable")
         if self.options.with_tiff:
             self.requires("libtiff/4.0.9@bincrafters/stable")
-        if self.options.with_qt:
-            self.requires("Qt/5.11.2@bincrafters/stable")
         if self.options.with_tbb:
             self.requires("TBB/4.4.4@conan/stable")
 
@@ -51,6 +49,9 @@ class OpencvConan(ConanFile):
             dependencies.extend(
                 ["libopenblas-dev", "liblapack-dev", "liblapacke-dev"])
 
+        if self.options.with_qt:
+            dependencies.extend(["qtbase5-dev"])
+
         if dependencies:
             installer = tools.SystemPackageTool()
             installer.update()  # Update the package database
@@ -65,8 +66,6 @@ class OpencvConan(ConanFile):
             self.options["libpng"].shared = True
         if self.options.with_tiff and self.options.shared:
             self.options["libtiff"].shared = True
-        if self.options.with_qt and self.options.shared:
-            self.options["Qt"].shared = True
         if self.options.with_tbb and self.options.shared:
             self.options["TBB"].shared = True
 
@@ -135,16 +134,46 @@ conan_basic_setup()''')
 
     def package_info(self):
         libs = [
-            "opencv_aruco", "opencv_bgsegm", "opencv_bioinspired", "opencv_calib3d",
-            "opencv_ccalib", "opencv_dpm", "opencv_face", "opencv_features2d", "opencv_flann",
-            "opencv_fuzzy", "opencv_highgui", "opencv_img_hash", "opencv_imgcodecs",
-            "opencv_imgproc", "opencv_line_descriptor", "opencv_ml", "opencv_objdetect",
-            "opencv_optflow", "opencv_phase_unwrapping", "opencv_photo", "opencv_plot",
-            "opencv_reg", "opencv_rgbd", "opencv_saliency", "opencv_shape", "opencv_stereo",
-            "opencv_stitching", "opencv_structured_light", "opencv_superres",
-            "opencv_surface_matching", "opencv_video", "opencv_videoio", "opencv_videostab",
-            "opencv_xfeatures2d", "opencv_ximgproc", "opencv_xobjdetect", "opencv_xphoto",
-            "opencv_core"
+            "opencv_stitching",
+            "opencv_superres",
+            "opencv_videostab",
+            "opencv_aruco",
+            "opencv_bgsegm",
+            "opencv_bioinspired",
+            "opencv_ccalib",
+            "opencv_datasets",
+            "opencv_dpm",
+            "opencv_face",
+            "opencv_photo",
+            "opencv_fuzzy",
+            "opencv_hfs",
+            "opencv_img_hash",
+            "opencv_line_descriptor",
+            "opencv_optflow",
+            "opencv_plot",
+            "opencv_reg",
+            "opencv_rgbd",
+            "opencv_saliency",
+            "opencv_stereo",
+            "opencv_structured_light",
+            "opencv_phase_unwrapping",
+            "opencv_surface_matching",
+            "opencv_xfeatures2d",
+            "opencv_shape",
+            "opencv_video",
+            "opencv_ml",
+            "opencv_ximgproc",
+            "opencv_calib3d",
+            "opencv_features2d",
+            "opencv_highgui",
+            "opencv_videoio",
+            "opencv_flann",
+            "opencv_xobjdetect",
+            "opencv_imgcodecs",
+            "opencv_objdetect",
+            "opencv_xphoto",
+            "opencv_imgproc",
+            "opencv_core",
         ]
 
         if self.options.with_ffmpeg:

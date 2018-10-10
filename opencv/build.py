@@ -19,13 +19,14 @@ if __name__ == "__main__":
         "opencv:shared": True
     })
 
-    builder.add({
-        "compiler.libcxx": "libstdc++11",
-        "build_type": "Release"
-    }, {
-        "opencv:with_qt": False,
-        "opencv:shared": False
-    })
+    # TODO: Check why the build for this option is failing
+    #builder.add({
+    #    "compiler.libcxx": "libstdc++11",
+    #    "build_type": "Release"
+    #}, {
+    #    "opencv:with_qt": False,
+    #    "opencv:shared": False
+    #})
 
     builder.add({
         "compiler.libcxx": "libstdc++11",
