@@ -1,10 +1,12 @@
 from conans import ConanFile, CMake, tools
+import os
 
 
 class OpencvConan(ConanFile):
     name = "opencv"
     version = "3.4.2"
     license = ""
+    homepage = "https://github.com/opencv/opencv"
     url = "https://github.com/labviros/is-packages"
     description = ""
     settings = "os", "compiler", "build_type", "arch"
@@ -41,13 +43,12 @@ class OpencvConan(ConanFile):
         dependencies = []
         if self.options.with_ffmpeg:
             dependencies.extend([
-                "libavdevice-dev", "libavfilter-dev", "libavcodec-dev", "libavformat-dev",
-                "libavresample-dev", "libswscale-dev"
+                "libavdevice-dev", "libavfilter-dev", "libavcodec-dev", 
+                "libavformat-dev", "libavresample-dev", "libswscale-dev"
             ])
 
         if self.options.with_lapack:
-            dependencies.extend(
-                ["libopenblas-dev", "liblapack-dev", "liblapacke-dev"])
+            dependencies.extend(["libopenblas-dev", "liblapack-dev", "liblapacke-dev"])
 
         if self.options.with_qt:
             dependencies.extend(["qtbase5-dev"])
@@ -70,10 +71,15 @@ class OpencvConan(ConanFile):
             self.options["TBB"].shared = True
 
     def source(self):
-        self.run("git clone https://github.com/opencv/opencv")
-        self.run("cd opencv && git checkout 3.4.2")
-        self.run("cd opencv && git clone https://github.com/opencv/opencv_contrib")
-        self.run("cd opencv/opencv_contrib && git checkout 3.4.2")
+        url, version = self.homepage, self.version
+        tools.get("{}/archive/{}.tar.gz".format(url, version))
+        extracted_dir = self.name + "-" + version
+        os.rename(extracted_dir, self.name)
+
+        tools.get("{}_contrib/archive/{}.tar.gz".format(url, version))
+        extracted_dir = self.name + "_contrib-" + version
+        os.rename(extracted_dir, "{0}/{0}_contrib".format(self.name))
+
         tools.replace_in_file(
             "opencv/CMakeLists.txt", "project(OpenCV CXX C)", '''project(OpenCV CXX C)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
@@ -106,14 +112,15 @@ conan_basic_setup()''')
         cmake.definitions["BUILD_opencv_dnn_modern"] = "OFF"
         cmake.definitions["BUILD_opencv_tracking"] = "OFF"
 
-        cmake.definitions["WITH_ZLIB"] = "ON" if self.options.with_zlib else "OFF"
-        cmake.definitions["WITH_JPEG"] = "ON" if self.options.with_jpeg else "OFF"
-        cmake.definitions["WITH_PNG"] = "ON" if self.options.with_png else "OFF"
-        cmake.definitions["WITH_TIFF"] = "ON" if self.options.with_tiff else "OFF"
-        cmake.definitions["WITH_QT"] = "ON" if self.options.with_qt else "OFF"
-        cmake.definitions["WITH_TBB"] = "ON" if self.options.with_tbb else "OFF"
-        cmake.definitions["WITH_FFMPEG"] = "ON" if self.options.with_ffmpeg else "OFF"
-        cmake.definitions["WITH_LAPACK"] = "ON" if self.options.with_lapack else "OFF"
+        cmake.definitions["WITH_ZLIB"] = self.options.with_zlib
+        cmake.definitions["WITH_JPEG"] = self.options.with_jpeg
+        cmake.definitions["WITH_PNG"] = self.options.with_png
+        cmake.definitions["WITH_TIFF"] = self.options.with_tiff
+        cmake.definitions["WITH_QT"] = self.options.with_qt
+        cmake.definitions["WITH_TBB"] = self.options.with_tbb
+        cmake.definitions["WITH_FFMPEG"] = self.options.with_ffmpeg
+        cmake.definitions["WITH_LAPACK"] = self.options.with_lapack
+
         cmake.definitions["WITH_IPP"] = "ON"
         cmake.definitions["WITH_OPENMP"] = "ON"
         cmake.definitions["WITH_WEBP"] = "OFF"
@@ -177,8 +184,7 @@ conan_basic_setup()''')
         ]
 
         if self.options.with_ffmpeg:
-            libs.extend(["avformat", "avcodec", "avdevice",
-                         "avresample", "avutil", "swscale"])
+            libs.extend(["avformat", "avcodec", "avdevice", "avresample", "avutil", "swscale"])
 
         if self.options.with_qt:
             libs.extend(["opencv_cvv"])
@@ -186,7 +192,6 @@ conan_basic_setup()''')
         if self.options.with_lapack:
             libs.extend(["lapacke", "lapack", "blas"])
 
-        libs.extend(["pthread", "dl", "IlmImf",
-                     "ittnotify", "ippiw", "ippicv"])
+        libs.extend(["pthread", "dl", "IlmImf", "ittnotify", "ippiw", "ippicv"])
 
         self.cpp_info.libs = libs
