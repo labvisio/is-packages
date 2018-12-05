@@ -14,9 +14,8 @@ class ZipkincppopentracingConan(ConanFile):
     requires = ("libcurl/7.61.1@bincrafters/stable", "opentracing-cpp/1.4.0@is/stable")
 
     def configure(self):
-        if self.options.shared:
-            self.options["libcurl"].shared = True
-            self.options["opentracing-cpp"].shared = True
+        self.options["libcurl"].shared = self.options.shared 
+        self.options["opentracing-cpp"].shared = self.options.shared 
 
     def source(self):
         self.run("git clone https://github.com/rnburn/zipkin-cpp-opentracing")

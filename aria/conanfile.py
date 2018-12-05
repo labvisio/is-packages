@@ -9,7 +9,8 @@ class AriaConan(ConanFile):
     url = "https://github.com/labviros/is-packages"
     description = ""
     settings = "os", "compiler", "build_type", "arch"
-
+    options = {"shared": [True, False]}
+    default_options = {"shared": False}
     source_subfolder = "source_subfolder"
 
     def source(self):
@@ -18,8 +19,22 @@ class AriaConan(ConanFile):
         extracted_dir = "ARIA-src-" + self.version
         os.rename(extracted_dir, self.source_subfolder)
 
+        tools.replace_in_file(
+            os.path.join(self.source_subfolder, "Makefile"),
+            "STATIC_TARGETS:=lib/libAria.a examples/demoStatic$(binsuffix)",
+            "STATIC_TARGETS:=lib/libAria.a",
+        )
+        tools.replace_in_file(
+            os.path.join(self.source_subfolder, "Makefile"),
+            "TARGETS:=lib/libAria.$(sosuffix) examples/demo$(binsuffix)",
+            "TARGETS:=lib/libAria.$(sosuffix)",
+        )
+
     def build(self):
-        self.run("cd {} && make allLibs".format(self.source_subfolder))
+        if self.options.shared:
+            self.run("cd {} && make all".format(self.source_subfolder))
+        else:
+            self.run("cd {} && make static".format(self.source_subfolder))
 
     def package(self):
         self.copy("*.a", "lib", "", keep_path=False)
@@ -28,4 +43,7 @@ class AriaConan(ConanFile):
                   "include/Aria", "", keep_path=False)
 
     def package_info(self):
-        self.cpp_info.libs = ["Aria",  "ArNetworking"]
+        self.cpp_info.libs = ["Aria"]
+        if not self.options.shared:
+            self.cpp_info.libs.extend(["pthread", "dl"])
+

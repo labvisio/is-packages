@@ -14,9 +14,8 @@ class PrometheuscppConan(ConanFile):
     requires = "protobuf/3.6.1@bincrafters/stable", "zlib/1.2.11@conan/stable"
 
     def configure(self):
-        if self.options.shared:
-            self.options["protobuf"].shared = True
-            self.options["zlib"].shared = True
+        self.options["protobuf"].shared = self.options.shared 
+        self.options["zlib"].shared = False 
 
     def source(self):
         self.run("git clone https://github.com/jupp0r/prometheus-cpp")
@@ -39,3 +38,5 @@ conan_basic_setup()''')
 
     def package_info(self):
         self.cpp_info.libs = ["prometheus-cpp"]
+        if "arm" in str(self.settings.arch):
+            self.cpp_info.libs.append("atomic")

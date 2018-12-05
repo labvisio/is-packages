@@ -43,12 +43,13 @@ class OpencvConan(ConanFile):
         dependencies = []
         if self.options.with_ffmpeg:
             dependencies.extend([
-                "libavdevice-dev", "libavfilter-dev", "libavcodec-dev", 
+                "libavdevice-dev", "libavfilter-dev", "libavcodec-dev",
                 "libavformat-dev", "libavresample-dev", "libswscale-dev"
             ])
 
         if self.options.with_lapack:
-            dependencies.extend(["libopenblas-dev", "liblapack-dev", "liblapacke-dev"])
+            dependencies.extend(
+                ["libopenblas-dev", "liblapack-dev", "liblapacke-dev"])
 
         if self.options.with_qt:
             dependencies.extend(["qtbase5-dev"])
@@ -59,16 +60,16 @@ class OpencvConan(ConanFile):
             installer.install(" ".join(dependencies))  # Install the package
 
     def configure(self):
-        if self.options.with_zlib and self.options.shared:
-            self.options["zlib"].shared = True
-        if self.options.with_jpeg and self.options.shared:
-            self.options["libjpeg"].shared = True
-        if self.options.with_png and self.options.shared:
-            self.options["libpng"].shared = True
-        if self.options.with_tiff and self.options.shared:
-            self.options["libtiff"].shared = True
-        if self.options.with_tbb and self.options.shared:
-            self.options["TBB"].shared = True
+        if self.options.with_zlib:
+            self.options["zlib"].shared = False
+        if self.options.with_jpeg:
+            self.options["libjpeg"].shared = self.options.shared
+        if self.options.with_png:
+            self.options["libpng"].shared = self.options.shared
+        if self.options.with_tiff:
+            self.options["libtiff"].shared = self.options.shared
+        if self.options.with_tbb:
+            self.options["TBB"].shared = self.options.shared
 
     def source(self):
         url, version = self.homepage, self.version
@@ -184,7 +185,8 @@ conan_basic_setup()''')
         ]
 
         if self.options.with_ffmpeg:
-            libs.extend(["avformat", "avcodec", "avdevice", "avresample", "avutil", "swscale"])
+            libs.extend(["avformat", "avcodec", "avdevice",
+                         "avresample", "avutil", "swscale"])
 
         if self.options.with_qt:
             libs.extend(["opencv_cvv"])
@@ -192,6 +194,7 @@ conan_basic_setup()''')
         if self.options.with_lapack:
             libs.extend(["lapacke", "lapack", "blas"])
 
-        libs.extend(["pthread", "dl", "IlmImf", "ittnotify", "ippiw", "ippicv"])
+        libs.extend(["pthread", "dl", "IlmImf",
+                     "ittnotify", "ippiw", "ippicv"])
 
         self.cpp_info.libs = libs

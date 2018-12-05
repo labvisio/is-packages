@@ -14,9 +14,8 @@ class SimpleamqpclientConan(ConanFile):
     requires = ("rabbitmq-c/0.9.0@is/stable", "boost/1.66.0@conan/stable")
 
     def configure(self):
-        if self.options.shared:
-            self.options["boost"].shared = True
-            self.options["rabbitmq-c"].shared = True
+        self.options["boost"].shared = self.options.shared 
+        self.options["rabbitmq-c"].shared = self.options.shared 
         self.options["rabbitmq-c"].with_openssl = self.options.with_openssl
 
     def source(self):

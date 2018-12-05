@@ -22,8 +22,8 @@ class RabbitMQConan(ConanFile):
 
     def configure(self):
         del self.settings.compiler.libcxx
-        if self.options.with_openssl and self.options.shared:
-            self.options["OpenSSL"].shared = True
+        if self.options.with_openssl:
+            self.options["OpenSSL"].shared = self.options.shared
   
     def build(self):
         cmake = CMake(self)
