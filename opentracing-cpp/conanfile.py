@@ -8,7 +8,7 @@ class OpenTracingCppConan(ConanFile):
     name = "opentracing-cpp"
     version = "1.4.0"
     license = ""
-    url = "https://github.com/labviros/is-packages"
+    url = "https://github.com/labvisio/is-packages"
     description = ""
     settings = "os", "compiler", "build_type", "arch"
     options = {
