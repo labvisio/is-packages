@@ -1,42 +1,70 @@
-from conans import ConanFile, CMake, tools
+import os
+
+from conan import ConanFile
+from conan.tools.scm import Git
+from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
+from conan.tools.files import copy, rmdir, apply_conandata_patches, export_conandata_patches
 
 
-class PrometheuscppConan(ConanFile):
+class PrometheusCppConan(ConanFile):
     name = "prometheus-cpp"
     version = "0.4.1"
     license = ""
-    url = "https://github.com/labviros/is-packages"
+    url = "https://github.com/labvisio/is-packages"
     description = ""
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [True, False], "fPIC": [True, False]}
-    default_options = "shared=True", "fPIC=True"
-    generators = "cmake"
-    requires = "protobuf/3.6.1@bincrafters/stable", "zlib/1.2.11@conan/stable"
+    options = {
+        "shared": [True, False],
+        "fPIC": [True, False],
+    }
+    default_options = {
+        "shared": True,
+        "fPIC": True,
+    }
 
-    def configure(self):
-        self.options["protobuf"].shared = self.options.shared 
-        self.options["zlib"].shared = False 
+    def export_sources(self):
+        export_conandata_patches(self)
+
+    def requirements(self):
+        self.requires("zlib/1.2.13")
 
     def source(self):
-        self.run("git clone https://github.com/jupp0r/prometheus-cpp")
-        self.run("cd prometheus-cpp && git checkout v0.4.1 && git submodule update --init")
-        tools.replace_in_file(
-            "prometheus-cpp/CMakeLists.txt", "project(prometheus-cpp)", '''project(prometheus-cpp)
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()''')
+        git = Git(self)
+        git.clone(url="https://github.com/jupp0r/prometheus-cpp", target=".")
+        git.run("checkout v0.4.1")
+        git.run("submodule update --init")
+        apply_conandata_patches(self)
+
+    def layout(self):
+        cmake_layout(self, src_folder="src")
+
+    def generate(self):
+        tc = CMakeToolchain(self, generator="Ninja")
+        tc.generate()
+        deps = CMakeDeps(self)
+        deps.generate()
 
     def build(self):
         cmake = CMake(self)
-        if not self.options.shared:
-            cmake.definitions["CMAKE_POSITION_INDEPENDENT_CODE"] = self.options.fPIC
-        cmake.configure(source_folder="prometheus-cpp")
+        cmake.configure()
         cmake.build()
-        cmake.install()
 
     def package(self):
-        pass
+        copy(self,
+             pattern="LICENSE",
+             dst=os.path.join(self.package_folder, "licenses"),
+             src=self.source_folder)
+        cmake = CMake(self)
+        cmake.install()
+        rmdir(self, os.path.join(self.package_folder, "lib", "cmake"))
+        rmdir(self, os.path.join(self.package_folder, "lib", "pkgconfig"))
 
     def package_info(self):
-        self.cpp_info.libs = ["prometheus-cpp"]
-        if "arm" in str(self.settings.arch):
-            self.cpp_info.libs.append("atomic")
+        self.cpp_info.set_property("cmake_file_name", "prometheus-cpp")
+        self.cpp_info.components["prometheus-cpp"].set_property("cmake_file_name", "prometheus-cpp")
+        self.cpp_info.components["prometheus-cpp"].set_property("cmake_target_name", "prometheus-cpp::prometheus-cpp")
+        self.cpp_info.components["prometheus-cpp"].set_property("pkg_config_name", "prometheus-cpp")
+        self.cpp_info.components["prometheus-cpp"].libs = ["prometheus-cpp"]
+        if self.settings.os in ["Linux", "FreeBSD"]:
+            self.cpp_info.components["prometheus-cpp"].system_libs = ["pthread", "rt"]
+        self.cpp_info.components["prometheus-cpp"].requires =["zlib::zlib"]
