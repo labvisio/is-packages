@@ -1,15 +1,14 @@
 project(PackageTest CXX)
 cmake_minimum_required(VERSION 2.8.12)
 
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
+find_package(opentracing-cpp REQUIRED CONFIG)
+find_package(zipkin-cpp-opentracing REQUIRED CONFIG)
+
+list(APPEND libraries
+    "opentracing-cpp::opentracing-cpp"
+    "zipkin-cpp-opentracing::zipkin-cpp-opentracing"
+)
 
 add_executable(example example.cpp)
-target_link_libraries(example ${CONAN_LIBS})
+target_link_libraries(example PRIVATE ${libraries})
 set_property(TARGET example PROPERTY CXX_STANDARD 11)
-
-# CTest is a testing tool that can be used to test your project.
-# enable_testing()
-# add_test(NAME example
-#          WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin
-#          COMMAND example)
