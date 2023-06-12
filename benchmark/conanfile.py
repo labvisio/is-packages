@@ -8,7 +8,8 @@ class BenchmarkConan(ConanFile):
     name = "benchmark"
     version = "1.4.1"
     license = "Apache-2.0"
-    url = "https://github.com/google/benchmark"
+    url = "https://github.com/labvisio/is-packages"
+    homepage = "https://github.com/google/benchmark"
     description = "A microbenchmark support library"
     settings = "os", "compiler", "build_type", "arch"
     options = {
