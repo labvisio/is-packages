@@ -9,9 +9,10 @@ from conan.tools.files import copy, rmdir, apply_conandata_patches, export_conan
 class PrometheusCppConan(ConanFile):
     name = "prometheus-cpp"
     version = "0.4.1"
-    license = ""
+    license = "MIT"
     url = "https://github.com/labvisio/is-packages"
-    description = ""
+    homepage = "https://github.com/jupp0r/prometheus-cpp"
+    description = "Prometheus Client Library for Modern C++"
     settings = "os", "compiler", "build_type", "arch"
     options = {
         "shared": [True, False],
@@ -38,9 +39,12 @@ class PrometheusCppConan(ConanFile):
     def layout(self):
         cmake_layout(self, src_folder="src")
 
+
     def generate(self):
-        tc = CMakeToolchain(self, generator="Ninja")
-        tc.generate()
+        cmake = CMakeToolchain(self)
+        cmake.variables["BUILD_SHARED_LIBS"] = self.options.shared
+        cmake.variables["BUILD_STATIC_LIBS"] = not self.options.shared
+        cmake.generate()
         deps = CMakeDeps(self)
         deps.generate()
 
@@ -50,10 +54,7 @@ class PrometheusCppConan(ConanFile):
         cmake.build()
 
     def package(self):
-        copy(self,
-             pattern="LICENSE",
-             dst=os.path.join(self.package_folder, "licenses"),
-             src=self.source_folder)
+        copy(self, "LICENSE", src=self.source_folder, dst=os.path.join(self.package_folder, "licenses"))
         cmake = CMake(self)
         cmake.install()
         rmdir(self, os.path.join(self.package_folder, "lib", "cmake"))
