@@ -41,7 +41,7 @@ def main():
             -o:h opentracing-cpp/*:shared=True
     """
     subprocess.call(['bash', '-c', command])
-    
+
 
 if __name__ == "__main__":
     main()
