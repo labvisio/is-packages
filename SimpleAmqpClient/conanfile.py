@@ -27,7 +27,7 @@ class SimpleAmqpClientConan(ConanFile):
 
     def requirements(self):
         self.requires("rabbitmq-c/0.9.0@is/stable")
-        self.requires("boost/1.81.0")
+        self.requires("boost/1.80.0", transitive_headers=True)
 
     def configure(self):
         if self.options.shared:
@@ -68,4 +68,4 @@ class SimpleAmqpClientConan(ConanFile):
         self.cpp_info.set_property("cmake_file_name", "SimpleAmqpClient")
         self.cpp_info.set_property("cmake_target_name", "SimpleAmqpClient::SimpleAmqpClient")
         self.cpp_info.components["SimpleAmqpClient"].libs = ["SimpleAmqpClient"]
-        self.cpp_info.components["SimpleAmqpClient"].requires = ["rabbitmq-c::rabbitmq-c", "boost::boost"]
+        self.cpp_info.components["SimpleAmqpClient"].requires = ["rabbitmq-c::rabbitmq-c", "boost::headers", "boost::system"]
