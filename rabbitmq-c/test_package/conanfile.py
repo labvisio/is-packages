@@ -1,7 +1,8 @@
+import os
+
 from conan import ConanFile
 from conan.tools.build import can_run
 from conan.tools.cmake import CMake, CMakeToolchain, cmake_layout
-import os
 
 
 class TestPackageConan(ConanFile):
@@ -16,9 +17,7 @@ class TestPackageConan(ConanFile):
         self.requires(self.tested_reference_str)
 
     def generate(self):
-        tc = CMakeToolchain(self, generator="Ninja")
-        tc.variables["RABBITMQ_SHARED"] = self.dependencies["rabbitmq-c"].options.shared
-        tc.variables["WITH_SSL"] = self.dependencies["rabbitmq-c"].options.ssl
+        tc = CMakeToolchain(self)
         tc.generate()
 
     def build(self):
