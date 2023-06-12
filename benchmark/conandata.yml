@@ -1,0 +1,4 @@
+sources:
+  "1.4.1":
+    url: https://github.com/google/benchmark/archive/refs/tags/v1.4.1.tar.gz
+    sha256: f8e525db3c42efc9c7f3bc5176a8fa893a9a9920bbd08cef30fb56a51854d60d
