@@ -1,7 +1,48 @@
-from conan.packager import ConanMultiPackager
+import subprocess
+
+
+def main():
+    command = """
+        conan create . --user is --channel stable \
+            -s compiler=gcc \
+            -s compiler.version=11 \
+            -s compiler.libcxx=libstdc++11 \
+            -s build_type=Release \
+            -b missing \
+            -o:h SimpleAmqpClient/*:shared=False \
+    """
+    subprocess.call(['bash', '-c', command])
+    command = """
+        conan create . --user is --channel stable \
+            -s compiler=gcc \
+            -s compiler.version=11 \
+            -s compiler.libcxx=libstdc++11 \
+            -s build_type=Release \
+            -b missing \
+            -o:h SimpleAmqpClient/*:shared=True \
+    """
+    subprocess.call(['bash', '-c', command])
+    command = """
+        conan create . --user is --channel stable \
+            -s compiler=gcc \
+            -s compiler.version=11 \
+            -s compiler.libcxx=libstdc++11 \
+            -s build_type=Debug \
+            -b missing \
+            -o:h SimpleAmqpClient/*:shared=False \
+    """
+    subprocess.call(['bash', '-c', command])
+    command = """
+        conan create . --user is --channel stable \
+            -s compiler=gcc \
+            -s compiler.version=11 \
+            -s compiler.libcxx=libstdc++11 \
+            -s build_type=Debug \
+            -b missing \
+            -o:h SimpleAmqpClient/*:shared=True \
+    """
+    subprocess.call(['bash', '-c', command])
+
 
 if __name__ == "__main__":
-    builder = ConanMultiPackager(build_policy="missing")
-    builder.add({"compiler.libcxx": "libstdc++11", "build_type": "Release"})
-    builder.add({"compiler.libcxx": "libstdc++11", "build_type": "Debug"})
-    builder.run()
+    main()

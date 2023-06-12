@@ -1,44 +1,71 @@
-from conans import ConanFile, CMake, tools
+import os
+
+from conan import ConanFile
+from conan.tools.files import get, copy, rmdir
+from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
 
 
-class SimpleamqpclientConan(ConanFile):
-    name = "SimpleAmqpClient"
+class SimpleAmqpClientConan(ConanFile):
+    name = "simpleamqpclient"
     version = "2.5.0"
-    license = ""
-    url = "https://github.com/labviros/is-packages"
-    description = ""
+    license = "MIT"
+    url = "https://github.com/labvisio/is-packages"
+    homepage = "https://github.com/alanxz/SimpleAmqpClient"
+    description = "Simple C++ Interface to rabbitmq-c"
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [True, False], "fPIC": [True, False], "with_openssl": [True, False]}
-    default_options = "shared=True", "fPIC=True", "with_openssl=False"
-    generators = "cmake"
-    requires = ("rabbitmq-c/0.9.0@is/stable", "boost/1.66.0@conan/stable")
+    package_type = "library"
+    options = {
+        "shared": [True, False],
+        "fPIC": [True, False],
+        "with_openssl": [True, False],
+    }
+    default_options = {
+        "shared": True,
+        "fPIC": True, 
+        "with_openssl": False
+    }
+
+    def requirements(self):
+        self.requires("rabbitmq-c/0.9.0@is/stable")
+        self.requires("boost/1.81.0")
 
     def configure(self):
-        self.options["boost"].shared = self.options.shared 
-        self.options["rabbitmq-c"].shared = self.options.shared 
+        if self.options.shared:
+            self.options.rm_safe("fPIC")
+        self.options["boost"].shared = self.options.shared
+        self.options["rabbitmq-c"].shared = self.options.shared
         self.options["rabbitmq-c"].with_openssl = self.options.with_openssl
 
+    def layout(self):
+        cmake_layout(self, src_folder="src")
+
     def source(self):
-        self.run("git clone https://github.com/alanxz/SimpleAmqpClient")
-        self.run("cd SimpleAmqpClient && git checkout 6323892d3e8701489fb945f45aa877a7e2a0ce31")
-        tools.replace_in_file(
-            "SimpleAmqpClient/CMakeLists.txt", "PROJECT(SimpleAmqpClient)",
-            '''PROJECT(SimpleAmqpClient)
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()''')
+        get(self, **self.conan_data["sources"][self.version],
+            destination=self.source_folder, strip_root=True)
+
+    def generate(self):
+        tc = CMakeToolchain(self)
+        tc.variables["ENABLE_SSL_SUPPORT"] = self.options.with_openssl
+        tc.variables["ENABLE_TESTING"] = "OFF"
+        tc.generate()
+        deps = CMakeDeps(self)
+        deps.generate()
 
     def build(self):
         cmake = CMake(self)
-        if not self.options.shared:
-            cmake.definitions["CMAKE_POSITION_INDEPENDENT_CODE"] = self.options.fPIC
-        cmake.definitions["ENABLE_SSL_SUPPORT"] = self.options.with_openssl
-        cmake.definitions["ENABLE_TESTING"] = "OFF"
-        cmake.configure(source_folder="SimpleAmqpClient")
+        cmake.configure()
         cmake.build()
-        cmake.install()
 
     def package(self):
-        pass
+        copy(self, "LICENSE-MIT", src=self.source_folder, dst=os.path.join(self.package_folder, "licenses"))
+        cmake = CMake(self)
+        cmake.install()
+        rmdir(self, os.path.join(self.package_folder, "lib", "pkgconfig"))
+        rmdir(self, os.path.join(self.package_folder, "lib", "cmake"))
 
     def package_info(self):
-        self.cpp_info.libs = ["SimpleAmqpClient"]
+        self.cpp_info.set_property("pkg_config_name", "SimpleAmqpClient")
+        self.cpp_info.set_property("cmake_file_name", "SimpleAmqpClient")
+        self.cpp_info.set_property("cmake_target_name", "SimpleAmqpClient::SimpleAmqpClient")
+        self.cpp_info.components["SimpleAmqpClient"].libs = ["SimpleAmqpClient"]
+        self.cpp_info.components["SimpleAmqpClient"].requires = ["rabbitmq-c::rabbitmq-c", "boost::boost"]
