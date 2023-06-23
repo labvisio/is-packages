@@ -1,7 +1,9 @@
 # Project
 build
-spinnaker/artifacts/spinnaker-*
-flycapture2/artifacts/flycapture2-*
+recipes/is-msgs
+recipes/is-wire
+recipes/spinnaker/artifacts/spinnaker-*
+recipes/flycapture2/artifacts/flycapture2-*
 
 # VSCode
 .vscode
