@@ -1,6 +1,7 @@
 import os
 
 from conan import ConanFile
+from conan.tools.scm import Git
 from conan.tools.files import get, copy, rmdir
 from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
 
@@ -40,8 +41,9 @@ class SimpleAmqpClientConan(ConanFile):
         cmake_layout(self, src_folder="src")
 
     def source(self):
-        get(self, **self.conan_data["sources"][self.version],
-            destination=self.source_folder, strip_root=True)
+        git = Git(self)
+        git.clone(url="https://github.com/alanxz/SimpleAmqpClient", target=".")
+        git.run("checkout 6323892d3e8701489fb945f45aa877a7e2a0ce31")
 
     def generate(self):
         tc = CMakeToolchain(self)
