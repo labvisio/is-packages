@@ -1,8 +1,0 @@
-FROM lasote/conangcc7-armv7hf
-
-ENV CONAN_GCC_VERSIONS 7 
-ENV CONAN_ARCHS armv7hf
-
-RUN conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
-RUN conan remote add is https://api.bintray.com/conan/labviros/is                      
-RUN sudo pip install conan_package_tools conan --upgrade                                
