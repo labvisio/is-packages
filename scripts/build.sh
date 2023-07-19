@@ -11,7 +11,7 @@ password=$3
 gcc_version=$4
 
 docker build \
-  -t is-builder-gcc$GCC_VERSION \
+  -t is-builder-gcc$gcc_version \
   --build-arg IS_CONAN=$remote \
   --build-arg GCC_VERSION=$gcc_version \
   .
