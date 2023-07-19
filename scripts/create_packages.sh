@@ -14,17 +14,18 @@ cd zipkin-cpp-opentracing && python3 build.py && cd ..
 cd benchmark && python3 build.py && cd ..
 cd expected && python3 build.py && cd ..
 
-cd ..
-# git clone https://github.com/labviros/is-msgs \
-#   && cd is-msgs \
-#   && git checkout v1.1.8 \
-#   && python package.py \
-#   && cd ..
+git clone https://github.com/labvisio/is-msgs \
+  && cd is-msgs \
+  && git checkout develop \
+  && python package.py \
+  && cd ..
 
-# git clone https://github.com/labviros/is-wire \
-#   && cd is-wire \
-#   && git checkout v1.1.4 \
-#   && python package.py \
-#   && cd ..
+git clone https://github.com/labvisio/is-wire \
+  && cd is-wire \
+  && git checkout develop \
+  && python package.py \
+  && cd ..
+
+cd ..
 
 # cd opencv && python build.py && cd ..
