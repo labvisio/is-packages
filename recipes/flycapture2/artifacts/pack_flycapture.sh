@@ -33,33 +33,37 @@ rm -f libflycapture-c.so libflycapture-c.so.2
 rm -f libflycapture.so libflycapture.so.2
 rm -f libflycapturegui-c.so libflycapturegui-c.so.2
 rm -f libflycapturegui.so libflycapturegui.so.2
+rm -f libflycapturevideo-c.so libflycapturevideo-c.so.2
+rm -f libflycapturevideo.so libflycapturevideo.so.2
 rm -f libmultisync-c.so libmultisync-c.so.2
 rm -f libmultisync.so libmultisync.so.2
-rm -f libptgreyvideoencoder.so libptgreyvideoencoder.so.2
 
 mv libflycapture-c.so.$FLYCAPTURE_VERSION libflycapture-c.so
 mv libflycapture.so.$FLYCAPTURE_VERSION libflycapture.so 
 mv libflycapturegui-c.so.$FLYCAPTURE_VERSION libflycapturegui-c.so
 mv libflycapturegui.so.$FLYCAPTURE_VERSION libflycapturegui.so
+mv libflycapturevideo-c.so.$FLYCAPTURE_VERSION libflycapturevideo-c.so
+mv libflycapturevideo.so.$FLYCAPTURE_VERSION libflycapturevideo.so
 mv libmultisync-c.so.$FLYCAPTURE_VERSION libmultisync-c.so
 mv libmultisync.so.$FLYCAPTURE_VERSION libmultisync.so
-mv libptgreyvideoencoder.so.$FLYCAPTURE_VERSION libptgreyvideoencoder.so
 
 ln -s libflycapture-c.so libflycapture-c.so.2
 ln -s libflycapture.so libflycapture.so.2
 ln -s libflycapturegui-c.so libflycapturegui-c.so.2
 ln -s libflycapturegui.so libflycapturegui.so.2
+ln -s libflycapturevideo-c.so libflycapturevideo-c.so.2
+ln -s libflycapturevideo.so libflycapturevideo.so.2
 ln -s libmultisync-c.so libmultisync-c.so.2
 ln -s libmultisync.so libmultisync.so.2
-ln -s libptgreyvideoencoder.so libptgreyvideoencoder.so.2
 
 ln -s libflycapture-c.so libflycapture-c.so.$FLYCAPTURE_VERSION
 ln -s libflycapture.so libflycapture.so.$FLYCAPTURE_VERSION
 ln -s libflycapturegui-c.so libflycapturegui-c.so.$FLYCAPTURE_VERSION
 ln -s libflycapturegui.so libflycapturegui.so.$FLYCAPTURE_VERSION
+ln -s libflycapturevideo-c.so libflycapturevideo-c.so.$FLYCAPTURE_VERSION
+ln -s libflycapturevideo.so libflycapturevideo.so.$FLYCAPTURE_VERSION
 ln -s libmultisync-c.so libmultisync-c.so.$FLYCAPTURE_VERSION
 ln -s libmultisync.so libmultisync.so.$FLYCAPTURE_VERSION
-ln -s libptgreyvideoencoder.so libptgreyvideoencoder.so.$FLYCAPTURE_VERSION
 
 cd ..
 
