@@ -27,20 +27,29 @@ done
 
 cd usr/
 rm -rf share/
+cd ..
 
-cd lib/
-rm -f libSpinnaker_C.so libspinnaker-c.so.1
-rm -f libSpinnaker.so libspinnaker.so.1
-rm -f libptgreyvideoencoder.so libptgreyvideoencoder.so.1
-mv libSpinnaker_C.so.$SPINNAKER_VERSION libSpinnaker_C.so
+cd opt/spinnaker/lib/
+rm -f libSpinnaker.so libSpinnaker.so.3
+rm -f libSpinnaker_C.so libSpinnaker_C.so.3
+rm -f libSpinVideo.so libSpinVideo.so.3
+rm -f libSpinVideo_C.so libSpinVideo_C.so.3
+
 mv libSpinnaker.so.$SPINNAKER_VERSION libSpinnaker.so
-mv libptgreyvideoencoder.so.$SPINNAKER_VERSION libptgreyvideoencoder.so
-ln -s libSpinnaker.so libSpinnaker.so.1
-ln -s libSpinnaker_C.so libSpinnaker_C.so.1
-ln -s libptgreyvideoencoder.so libptgreyvideoencoder.so.1
+mv libSpinnaker_C.so.$SPINNAKER_VERSION libSpinnaker_C.so
+mv libSpinVideo.so.$SPINNAKER_VERSION libSpinVideo.so
+mv libSpinVideo_C.so.$SPINNAKER_VERSION libSpinVideo_C.so
+
+ln -s libSpinnaker.so libSpinnaker.so.3
+ln -s libSpinnaker_C.so libSpinnaker_C.so.3
+ln -s libSpinVideo.so libSpinVideo.so.3
+ln -s libSpinVideo_C.so libSpinVideo_C.so.3
+
 ln -s libSpinnaker.so libSpinnaker.so.$SPINNAKER_VERSION
 ln -s libSpinnaker_C.so libSpinnaker_C.so.$SPINNAKER_VERSION
-ln -s libptgreyvideoencoder.so libptgreyvideoencoder.so.$SPINNAKER_VERSION
+ln -s libSpinVideo.so libSpinVideo.so.$SPINNAKER_VERSION
+ln -s libSpinVideo_C.so libSpinVideo_C.so.$SPINNAKER_VERSION
+
 cd ..
 
 tar cf - include/ lib/ | gzip -9 -> $CURRENT_DIR/spinnaker.tar.gz

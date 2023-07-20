@@ -1,5 +1,5 @@
-#include "spinnaker/SpinGenApi/SpinnakerGenApi.h"
-#include "spinnaker/Spinnaker.h"
+#include "SpinGenApi/SpinnakerGenApi.h"
+#include "Spinnaker.h"
 
 namespace spn {
 using namespace Spinnaker;
