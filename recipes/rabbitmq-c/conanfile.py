@@ -5,13 +5,13 @@ from conan.tools.files import copy, get, rmdir
 from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
 
 
-class RabbitmqcConan(ConanFile):
+class RabbitmqC(ConanFile):
     name = "rabbitmq-c"
     version = "0.9.0"
     license = "MIT"
     url = "https://github.com/labvisio/is-packages"
     homepage = "https://github.com/alanxz/rabbitmq-c"
-    description = "This is a C-language AMQP client library for use with v2.0+ of the RabbitMQ broker."
+    description = "C-language AMQP client library for use with v2.0+ of the RabbitMQ"
     topics = ("rabbitmq", "message queue")
     package_type = "library"
     settings = "os", "arch", "compiler", "build_type"
@@ -39,11 +39,16 @@ class RabbitmqcConan(ConanFile):
             self.requires("openssl/[>=1.1 <3]")
 
     def layout(self):
-        cmake_layout(self, src_folder="src")
+        cmake_layout(conanfile=self, src_folder="src")
 
     def source(self):
-        get(self, **self.conan_data["sources"][self.version],
-            destination=self.source_folder, strip_root=True)
+        get(
+            conanfile=self,
+            url=self.conan_data['sources'][self.version]['url'],
+            sha256=self.conan_data['sources'][self.version]['sha256'],
+            destination=self.source_folder,
+            strip_root=True,
+        )
 
     def generate(self):
         tc = CMakeToolchain(self)
@@ -69,16 +74,27 @@ class RabbitmqcConan(ConanFile):
         cmake.build()
 
     def package(self):
-        copy(self, "LICENSE", src=self.source_folder, dst=os.path.join(self.package_folder, "licenses"))
+        copy(
+            conanfile=self,
+            pattern="LICENSE",
+            src=self.source_folder,
+            dst=os.path.join(self.package_folder, "licenses"),
+        )
         cmake = CMake(self)
         cmake.install()
-        rmdir(self, os.path.join(self.package_folder, "lib", "pkgconfig"))
-        rmdir(self, os.path.join(self.package_folder, "lib", "cmake"))
+        rmdir(
+            conanfile=self,
+            path=os.path.join(self.package_folder, "lib", "pkgconfig"),
+        )
+        rmdir(
+            conanfile=self,
+            path=os.path.join(self.package_folder, "lib", "cmake"),
+        )
 
     def package_info(self):
         self.cpp_info.set_property("pkg_config_name", "rabbitmq-c")
         self.cpp_info.set_property("cmake_file_name", "rabbitmq-c")
-        self.cpp_info.set_property("cmake_target_name", f"rabbitmq-c::rabbitmq-c")
+        self.cpp_info.set_property("cmake_target_name", "rabbitmq-c::rabbitmq-c")
         self.cpp_info.components["rabbitmq-c"].libs = ["rabbitmq"]
         if self.settings.os in ["Linux", "FreeBSD"]:
             self.cpp_info.components["rabbitmq-c"].system_libs = ["pthread", "rt"]

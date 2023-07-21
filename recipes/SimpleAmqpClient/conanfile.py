@@ -6,7 +6,7 @@ from conan.tools.files import copy, rmdir
 from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
 
 
-class SimpleAmqpClientConan(ConanFile):
+class SimpleAmqpClient(ConanFile):
     name = "simpleamqpclient"
     version = "2.5.0"
     license = "MIT"
@@ -22,7 +22,7 @@ class SimpleAmqpClientConan(ConanFile):
     }
     default_options = {
         "shared": True,
-        "fPIC": True, 
+        "fPIC": True,
         "with_openssl": False,
     }
 
@@ -38,7 +38,7 @@ class SimpleAmqpClientConan(ConanFile):
         self.options["rabbitmq-c"].with_openssl = self.options.with_openssl
 
     def layout(self):
-        cmake_layout(self, src_folder="src")
+        cmake_layout(conanfile=self, src_folder="src")
 
     def source(self):
         git = Git(self)
@@ -59,15 +59,28 @@ class SimpleAmqpClientConan(ConanFile):
         cmake.build()
 
     def package(self):
-        copy(self, "LICENSE-MIT", src=self.source_folder, dst=os.path.join(self.package_folder, "licenses"))
+        copy(
+            conanfile=self,
+            pattern="LICENSE-MIT",
+            src=self.source_folder,
+            dst=os.path.join(self.package_folder, "licenses"),
+        )
         cmake = CMake(self)
         cmake.install()
-        rmdir(self, os.path.join(self.package_folder, "lib", "pkgconfig"))
-        rmdir(self, os.path.join(self.package_folder, "lib", "cmake"))
+        rmdir(
+            conanfile=self,
+            path=os.path.join(self.package_folder, "lib", "pkgconfig"),
+        )
+        rmdir(
+            conanfile=self,
+            path=os.path.join(self.package_folder, "lib", "cmake"),
+        )
 
     def package_info(self):
         self.cpp_info.set_property("pkg_config_name", "SimpleAmqpClient")
         self.cpp_info.set_property("cmake_file_name", "SimpleAmqpClient")
         self.cpp_info.set_property("cmake_target_name", "SimpleAmqpClient::SimpleAmqpClient")
         self.cpp_info.components["SimpleAmqpClient"].libs = ["SimpleAmqpClient"]
-        self.cpp_info.components["SimpleAmqpClient"].requires = ["rabbitmq-c::rabbitmq-c", "boost::boost"]
+        self.cpp_info.components["SimpleAmqpClient"].requires = [
+            "rabbitmq-c::rabbitmq-c", "boost::boost"
+        ]

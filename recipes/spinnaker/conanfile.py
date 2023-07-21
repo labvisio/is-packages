@@ -5,7 +5,7 @@ from conan.tools.files import copy, unzip
 from conan.tools.system.package_manager import Apt
 
 
-class SpinnakerConan(ConanFile):
+class Spinnaker(ConanFile):
     name = "spinnaker"
     version = "3.1.0.79"
     license = ""
@@ -23,14 +23,30 @@ class SpinnakerConan(ConanFile):
             'libavutil56',
             'libusb-1.0-0',
         ]
-        Apt(self).install(pack_names, update=True, check=True)
+        Apt(self).install(packages=pack_names, update=True, check=True)
 
     def build(self):
-        unzip(self, filename=os.path.join(self.build_folder, 'artifacts/spinnaker.tar.gz'))
+        unzip(
+            conanfile=self,
+            filename=os.path.join(
+                self.build_folder,
+                'artifacts/spinnaker.tar.gz',
+            ),
+        )
 
     def package(self):
-        copy(self, "*", src=os.path.join(self.source_folder, 'lib'), dst=os.path.join(self.package_folder, "lib"))
-        copy(self, "*", src=os.path.join(self.source_folder, 'include'), dst=os.path.join(self.package_folder, "include"))
+        copy(
+            conanfile=self,
+            pattern="*",
+            src=os.path.join(self.source_folder, 'lib'),
+            dst=os.path.join(self.package_folder, "lib"),
+        )
+        copy(
+            conanfile=self,
+            pattern="*",
+            src=os.path.join(self.source_folder, 'include'),
+            dst=os.path.join(self.package_folder, "include"),
+        )
 
     def package_info(self):
         self.cpp_info.set_property("pkg_config_name", "spinnaker")
@@ -44,7 +60,7 @@ class SpinnakerConan(ConanFile):
             'MathParser_gcc11_v3_0',
             'NodeMapData_gcc11_v3_0',
             'Spinnaker',
-            'Spinnaker_C',  
+            'Spinnaker_C',
             'SpinVideo',
             'SpinVideo_C',
             'XmlParser_gcc11_v3_0',

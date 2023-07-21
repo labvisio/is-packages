@@ -4,7 +4,8 @@ from conan import ConanFile
 from conan.tools.files import copy, get, rmdir
 from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
 
-class OpenTracingCppConan(ConanFile):
+
+class OpenTracingCpp(ConanFile):
     name = "opentracing-cpp"
     version = "1.4.0"
     license = "Apache-2.0"
@@ -17,17 +18,22 @@ class OpenTracingCppConan(ConanFile):
         "fPIC": [True, False],
     }
     default_options = {
-        "shared" : True,
+        "shared": True,
         "fPIC": True,
     }
 
     def layout(self):
-        cmake_layout(self, src_folder="src")
+        cmake_layout(conanfile=self, src_folder="src")
 
     def source(self):
-        get(self, **self.conan_data["sources"][self.version],
-            destination=self.source_folder, strip_root=True)
-        
+        get(
+            conanfile=self,
+            url=self.conan_data['sources'][self.version]['url'],
+            sha256=self.conan_data['sources'][self.version]['sha256'],
+            destination=self.source_folder,
+            strip_root=True,
+        )
+
     def configure(self):
         if self.options.shared:
             self.options.rm_safe("fPIC")
@@ -48,11 +54,22 @@ class OpenTracingCppConan(ConanFile):
         cmake.build()
 
     def package(self):
-        copy(self, "LICENSE", src=self.source_folder, dst=os.path.join(self.package_folder, "licenses"))
+        copy(
+            conanfile=self,
+            pattern="LICENSE",
+            src=self.source_folder,
+            dst=os.path.join(self.package_folder, "licenses"),
+        )
         cmake = CMake(self)
         cmake.install()
-        rmdir(self, os.path.join(self.package_folder, "lib", "pkgconfig"))
-        rmdir(self, os.path.join(self.package_folder, "lib", "cmake"))
+        rmdir(
+            conanfile=self,
+            path=os.path.join(self.package_folder, "lib", "pkgconfig"),
+        )
+        rmdir(
+            conanfile=self,
+            path=os.path.join(self.package_folder, "lib", "cmake"),
+        )
 
     def package_info(self):
         self.cpp_info.set_property("cmake_file_name", "opentracing-cpp")

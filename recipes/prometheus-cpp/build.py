@@ -17,5 +17,6 @@ def main():
             """
             subprocess.call(['bash', '-c', command])
 
+
 if __name__ == "__main__":
     main()

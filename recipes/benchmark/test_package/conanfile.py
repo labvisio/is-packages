@@ -11,22 +11,21 @@ class TestPackageConan(ConanFile):
     test_type = "explicit"
 
     def layout(self):
-        cmake_layout(self)
+        cmake_layout(conanfile=self)
 
     def requirements(self):
         self.requires(self.tested_reference_str)
 
     def generate(self):
-        tc = CMakeToolchain(self)
+        tc = CMakeToolchain(conanfile=self)
         tc.generate()
 
     def build(self):
-        cmake = CMake(self)
+        cmake = CMake(conanfile=self)
         cmake.configure()
         cmake.build()
 
     def test(self):
-        if can_run(self):
+        if can_run(conanfile=self):
             bin_path = os.path.join(self.cpp.build.bindirs[0], "example")
-            self.run(bin_path, env="conanrun")
-    
+            self.run(command=bin_path, env="conanrun")
