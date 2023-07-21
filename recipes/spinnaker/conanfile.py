@@ -1,8 +1,7 @@
 import os
 
 from conan import ConanFile
-from conan.tools.scm import Git
-from conan.tools.files import get, copy, rmdir, unzip, load
+from conan.tools.files import copy, unzip
 from conan.tools.system.package_manager import Apt
 
 
