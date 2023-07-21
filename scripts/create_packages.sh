@@ -8,8 +8,8 @@ cd SimpleAmqpClient && python3 build.py && cd ..
 cd prometheus-cpp && python3 build.py && cd ..
 cd opentracing-cpp && python3 build.py && cd ..
 cd zipkin-cpp-opentracing && python3 build.py && cd ..
-# cd spinnaker && python build.py && cd ..
-# cd flycapture2 && python build.py && cd ..
+cd spinnaker && python build.py && cd ..
+cd flycapture2 && python build.py && cd ..
 # cd armadillo && python build.py && cd ..
 cd benchmark && python3 build.py && cd ..
 cd expected && python3 build.py && cd ..
