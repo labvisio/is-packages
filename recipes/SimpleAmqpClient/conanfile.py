@@ -2,7 +2,7 @@ import os
 
 from conan import ConanFile
 from conan.tools.scm import Git
-from conan.tools.files import get, copy, rmdir
+from conan.tools.files import copy, rmdir
 from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
 
 
@@ -23,7 +23,7 @@ class SimpleAmqpClientConan(ConanFile):
     default_options = {
         "shared": True,
         "fPIC": True, 
-        "with_openssl": False
+        "with_openssl": False,
     }
 
     def requirements(self):
@@ -70,4 +70,4 @@ class SimpleAmqpClientConan(ConanFile):
         self.cpp_info.set_property("cmake_file_name", "SimpleAmqpClient")
         self.cpp_info.set_property("cmake_target_name", "SimpleAmqpClient::SimpleAmqpClient")
         self.cpp_info.components["SimpleAmqpClient"].libs = ["SimpleAmqpClient"]
-        self.cpp_info.components["SimpleAmqpClient"].requires = ["rabbitmq-c::rabbitmq-c", "boost::headers", "boost::system"]
+        self.cpp_info.components["SimpleAmqpClient"].requires = ["rabbitmq-c::rabbitmq-c", "boost::boost"]
